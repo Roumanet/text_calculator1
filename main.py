@@ -21,3 +21,11 @@ if s[0] == '@' and 5 <= len(s) <= 15 and c == len(s)-1:
     print('Correct')
 else:
     print('Incorrect')
+
+
+n = input()
+b = [i+j for i in '0123456789' for j in '0123456789'] + [i+j+k for i in '0123456789' for j in '0123456789' for k in '0123456789']
+if len(n)>6 and n[6] == '_' and n[0] in 'АВЕКМНОРСТУХ' and n[4] in 'АВЕКМНОРСТУХ' and n[5] in 'АВЕКМНОРСТУХ' and n[1] in '0123456789' and n[2] in '1234567890' and n[3] in '0123456789' and n[7:] in b:
+    print("YES")
+else:
+    print("NO")

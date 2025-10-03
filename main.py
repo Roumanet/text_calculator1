@@ -9,14 +9,15 @@ spisok_vsex_chisel = ([0, 'ноль'], [1, "один"], [2, 'два'], [3, 'тр
                       [20, 'двадцать'], [30, 'тридцать'], [40, 'сорок'], [50, 'пятьдесят'],[60, 'шестьдесят'], [70, 'семьдесят'], [80, 'восемьдесят'], [90, 'девяносто'],
                       [100, 'сто'], [200, 'двести'], [300, 'триста'], [400, 'четыреста'], [500, 'пятьсот'], [600, 'шестьсот'], [700, 'семьсот'], [800, 'восемьсот'], [900, 'девятьсот'],
                       [1000, 'одна тысяча'], [2000, 'две тысячи'], [3000, 'три тысячи'], [4000, 'четыре тысячи'], [5000, 'пять тысяч'], [6000, 'шесть тысяч'], [7000, 'семь тысяч'], [8000, 'восемь тысяч'], [9000, 'девять тысяч'],
-                      ['+', 'плюс'], ['-', 'минус'], ['*', 'умножить'])
+                      ['+', 'плюс'], ['-', 'минус'], ['*', 'умножить'], ['/', 'разделить'], [1, 'одна'], [2, 'две'], ['и', 'и'],
+                      [0.1, 'десятых'], [0.1, 'десятые'], [0.1, 'десятая'], [0.01, 'сотых'], [0.01, 'сотая'], [0.01, 'сотые'], [0.001, 'тысячных'], [0.001, 'тысячная'], [0.001, 'тысячные'])
 
 #operacii = ['+', 'плюс'], ['-', 'минус'], ['*', 'умножить на']
 
 
 primer = input()
 
-def slova_v_cifri(primer):
+def slova_v_cifri(primer): # каждое слово перерабатывает в число или знак 22 = 20 2
     primer_chisla = []
     primer = primer.split()
     for i in primer:
@@ -26,11 +27,13 @@ def slova_v_cifri(primer):
 
     primer_chisla_vmeste = []
     kazhdoe_chislo = 0
+    c = 0
     for i in range(len(primer_chisla)):
         #print(primer_chisla, primer_chisla_vmeste, kazhdoe_chislo)
-        if i+1 < len(primer_chisla) and str(primer_chisla[i]) != '*' and str(primer_chisla[i]) != '-' and str(primer_chisla[i]) != '+':
+
+        if i+1 < len(primer_chisla) and str(primer_chisla[i]) not in '*-+и/':
             kazhdoe_chislo += primer_chisla[i]
-        elif i+1 < len(primer_chisla) and (str(primer_chisla[i]) == '*' or str(primer_chisla[i]) == '-' or str(primer_chisla[i]) == '+'):
+        elif i+1 < len(primer_chisla) and (str(primer_chisla[i]) in '*-+и/'):
             primer_chisla_vmeste += [kazhdoe_chislo]
             primer_chisla_vmeste += [primer_chisla[i]]
             kazhdoe_chislo = 0
@@ -40,12 +43,37 @@ def slova_v_cifri(primer):
 
     return primer_chisla_vmeste
 
-print(slova_v_cifri(primer))
+spisok_chisel = slova_v_cifri(primer)
+for i in range(len(spisok_chisel)): # дробные числа перерабатывает 31.01 в 31*0.01 в 0.31
+    if '.' in str(spisok_chisel[i]):
+        spisok_chisel[i] = str(spisok_chisel[i]).replace('.', '*0.')
+        spisok_chisel[i] = eval(str(spisok_chisel[i]))
+
+spisok_chisel1 = []
+for i in range(len(spisok_chisel)): # соединяет целые и дробные числа в списке 22 0.1 в 22.1
+    if i+1 < len(spisok_chisel) and spisok_chisel[i+1] == 'и':
+        spisok_chisel1 += [spisok_chisel[i] + spisok_chisel[i+2]]
+        spisok_chisel[i] = ''
+        spisok_chisel[i + 1] = ''
+        spisok_chisel[i + 2] = ''
+    else:
+        spisok_chisel1 += [spisok_chisel[i]]
+
+spisok_chisel2 = []
+for i in range(len(spisok_chisel1)): # убирает пустые строки
+    if spisok_chisel1[i] != '':
+        spisok_chisel2 += [spisok_chisel1[i]]
+
+#print(spisok_chisel2)
 
 cifri = ''
-for i in slova_v_cifri(primer):
+for i in spisok_chisel2:
     cifri += str(i)
 print(eval(cifri))
 
 
-# девяносто девять плюс сорок восемь      двадцать два умножить на двадцать два
+
+
+
+# девяносто девять плюс сорок восемь      двадцать два умножить на двадцать два    двадцать два и сорок восемь сотых минус ноль и пять десятых
+#сорок один и тридцать одна сотая разделить на семнадцать

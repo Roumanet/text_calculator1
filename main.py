@@ -9,7 +9,7 @@ spisok_vsex_chisel = ([0, 'ноль'], [1, "один"], [2, 'два'], [3, 'тр
                       [20, 'двадцать'], [30, 'тридцать'], [40, 'сорок'], [50, 'пятьдесят'],[60, 'шестьдесят'], [70, 'семьдесят'], [80, 'восемьдесят'], [90, 'девяносто'],
                       [100, 'сто'], [200, 'двести'], [300, 'триста'], [400, 'четыреста'], [500, 'пятьсот'], [600, 'шестьсот'], [700, 'семьсот'], [800, 'восемьсот'], [900, 'девятьсот'],
                       [1000, 'одна тысяча'], [2000, 'две тысячи'], [3000, 'три тысячи'], [4000, 'четыре тысячи'], [5000, 'пять тысяч'], [6000, 'шесть тысяч'], [7000, 'семь тысяч'], [8000, 'восемь тысяч'], [9000, 'девять тысяч'],
-                      ['+', 'плюс'], ['-', 'минус'], ['*', 'умножить'], ['/', 'разделить'], [1, 'одна'], [2, 'две'], ['и', 'и'],
+                      ['+', 'плюс'], ['-', 'минус'], ['*', 'умножить'], ['/', 'разделить'], [1, 'одна'], [2, 'две'], ['и', 'и'], ['%', 'остаток'],
                       [0.1, 'десятых'], [0.1, 'десятые'], [0.1, 'десятая'], [0.01, 'сотых'], [0.01, 'сотая'], [0.01, 'сотые'], [0.001, 'тысячных'], [0.001, 'тысячная'], [0.001, 'тысячные'])
 
 #operacii = ['+', 'плюс'], ['-', 'минус'], ['*', 'умножить на']
@@ -24,16 +24,16 @@ def slova_v_cifri(primer):
         for j in spisok_vsex_chisel:
             if i == j[1]:
                 primer_chisla += [j[0]]
-
+    print(primer_chisla)
     primer_chisla_vmeste = []
     kazhdoe_chislo = 0
     c = 0
     for i in range(len(primer_chisla)): # каждое слово перерабатывает в число или знак 22 = 20 2
         #print(primer_chisla, primer_chisla_vmeste, kazhdoe_chislo)
 
-        if i+1 < len(primer_chisla) and str(primer_chisla[i]) not in '*-+и/':
+        if i+1 < len(primer_chisla) and str(primer_chisla[i]) not in '*-+и/%':
             kazhdoe_chislo += primer_chisla[i]
-        elif i+1 < len(primer_chisla) and (str(primer_chisla[i]) in '*-+и/'):
+        elif i+1 < len(primer_chisla) and (str(primer_chisla[i]) in '*-+и/%'):
             primer_chisla_vmeste += [kazhdoe_chislo]
             primer_chisla_vmeste += [primer_chisla[i]]
             kazhdoe_chislo = 0
@@ -82,7 +82,11 @@ else:
 
 celaia_chast_cifri = []
 for i in range(len(celaia_chast)): # переделывает 432 в 400 30 2
-    celaia_chast_cifri += [int(celaia_chast[i]) * int('1' + '0' * (len(celaia_chast) - i - 1))]
+    if int(celaia_chast[i]) * int('1' + '0' * (len(celaia_chast) - i - 1)) == 0 and len(celaia_chast) > 1:
+        continue
+    else:
+        celaia_chast_cifri += [int(celaia_chast[i]) * int('1' + '0' * (len(celaia_chast) - i - 1))]
+
 for i in range(len(celaia_chast_cifri)):
     if celaia_chast_cifri[i] == 10:
         celaia_chast_cifri[i] = celaia_chast_cifri[i] + celaia_chast_cifri[i + 1]

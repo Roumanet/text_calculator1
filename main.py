@@ -13,7 +13,7 @@ spisok_vsex_chisel = ([0, 'ноль'], [1, "один"], [1, 'одна'], [2, 'д
                       [10_000, 'десять тысяч'], [20_000, 'двадцать тысяч'], [30_000, 'тридцать тысяч'],    [40_000, 'сорок тысяч'], [50_000, 'пятьдесят тысяч'], [60_000, 'шестьдесят тысяч'],    [70_000, 'семьдесят тысяч'], [80_000, 'восемьдесят тысяч'], [90_000, 'девяносто тысяч'],
                       [100_000, 'сто тысяч'], [200_000, 'двести тысяч'], [300_000, 'триста тысяч'], [400_000, 'четыреста тысяч'], [500_000, 'пятьсот тысяч'], [600_000, 'шестьсот тысяч'],[700_000, 'семьсот тысяч'], [800_000, 'восемьсот тысяч'], [900_000, 'девятьсот тысяч'],
                       [1_000_000, 'один миллион'], [2_000_000, 'два миллиона'], [3_000_000, 'три миллиона'],[4_000_000, 'четыре миллиона'], [5_000_000, 'пять миллионов'], [6_000_000, 'шесть миллионов'], [7_000_000, 'семь миллионов'], [8_000_000, 'восемь миллионов'], [9_000_000, 'девять миллионов'],
-                      ['+', 'плюс'], ['-', 'минус'], ['*', 'умножить'], ['/', 'разделить'], ['и', 'и'], ['%', 'остаток'],
+                      ['+', 'плюс'], ['-', 'минус'], ['*', 'умножить'], ['/', 'разделить'], ['и', 'и'], ['%', 'остаток'], ['в периоде', 'в периоде'],
                       [0.1, 'десятых'], [0.1, 'десятая'], [0.1, 'десятые'], [0.01, 'сотых'], [0.01, 'сотая'], [0.01, 'сотые'], [0.001, 'тысячных'], [0.001, 'тысячная'], [0.001, 'тысячные'], [0.0001, 'десятитысячных'],
                       [0.0001, 'десятитысячная'], [0.0001, 'десятитысячные'], [0.00001, 'стотысячных'], [0.00001, 'стотысячная'], [0.00001, 'стотысячные'], [0.000001, 'миллионных'], [0.000001, 'миллионная'], [0.000001, 'миллионные'])
 
@@ -79,7 +79,7 @@ def slova_v_cifri(primer):
     cifri = ''
     for i in primer_chisla_pravilnie_drobi:
         cifri += str(i)
-    itog_otvet_cifri = round(eval(cifri), 9)
+    itog_otvet_cifri = round(eval(cifri), 11)
     print('itog_otvet_cifri', itog_otvet_cifri)
 
     return itog_otvet_cifri
@@ -93,6 +93,32 @@ if itog_otvet_cifri.find('.') != -1:
 else:
     celaia_chast = itog_otvet_cifri
     drobnaia_chast = []
+
+period = 0
+if len(drobnaia_chast) == 11:
+    for j in range(2):
+        if all(drobnaia_chast[i+j] == drobnaia_chast[i+4+j] and drobnaia_chast[i+1+j] == drobnaia_chast[i+5+j] and drobnaia_chast[i+2+j] == drobnaia_chast[i+6+j] and drobnaia_chast[i+3+j] == drobnaia_chast[i+7+j] for i in range(2-j)):
+            period = 4, j
+            break
+    for j in range(3):
+        if all(drobnaia_chast[i+j] == drobnaia_chast[i+j+3] and drobnaia_chast[i+j+1] == drobnaia_chast[i+j+4] and drobnaia_chast[i+j+2] == drobnaia_chast[i+j+5] for i in range(6-j)):
+            period = 3, j
+            break
+    for j in range(4):
+        if all(drobnaia_chast[i+j] == drobnaia_chast[i+j+2] and drobnaia_chast[i+j+1] == drobnaia_chast[i+j+3] for i in range(8-j)):
+            period = 2, j
+            break
+    for j in range(5):
+        if all(drobnaia_chast[i+j] == drobnaia_chast[i+j+1] for i in range(9-j)):
+            period = 1, j
+            break
+print('period', period)
+
+if len(drobnaia_chast) > 6:
+    drobnaia_chast = drobnaia_chast[:6]
+if period != 0:
+    drobnaia_chast = drobnaia_chast[:period[1]] + drobnaia_chast[period[1]:period[0]+1] # +1
+print('drobnaia_chast', drobnaia_chast)
 
 # переделывает 432 в 400 30 2
 celaia_chast_cifri = []
@@ -112,20 +138,73 @@ print('celaia_chast_cifri', celaia_chast_cifri)
 # переделывает 0.432 в 400 30 2 0.001
 drobnaia_chast_cifri = []
 if drobnaia_chast != '0' and drobnaia_chast != []:
-    for i in range(len(drobnaia_chast)):
-        if int(drobnaia_chast[i]) != 0:
-            drobnaia_chast_cifri += [int(drobnaia_chast[i]) * int('1' + '0' * (len(drobnaia_chast) - i - 1))]
-    drobnaia_chast_cifri += [float('0.' + '0' * (len(drobnaia_chast) - 1) + '1')]
+    if period != 0:
+        if drobnaia_chast[:period[1]] != '':
+            drobnaia_chast_cifri += [drobnaia_chast[:period[1]]]
+        if drobnaia_chast_cifri != [] and period[1] != 0: # попрбовать где период сразу
+            drobnaia_chast_cifri += 'и'
+        drobnaia_chast_cifri += [drobnaia_chast[period[1]:period[0]+1]]
+
+    else:
+        for i in range(len(drobnaia_chast)):
+            if int(drobnaia_chast[i]) != 0:
+                drobnaia_chast_cifri += [int(drobnaia_chast[i]) * int('1' + '0' * (len(drobnaia_chast) - i - 1))]
+        drobnaia_chast_cifri += [float('0.' + '0' * (len(drobnaia_chast) - 1) + '1')]
+
     for i in range(len(drobnaia_chast_cifri)):
         if drobnaia_chast_cifri[i] == 10:
             drobnaia_chast_cifri[i] = drobnaia_chast_cifri[i] + drobnaia_chast_cifri[i+1]
             drobnaia_chast_cifri[i + 1] = ''
     print('drobnaia_chast_cifri', drobnaia_chast_cifri)
 
+    dl = '0'
+    if period != 0:
+        if period[1] > 0:
+            for i in range(len(drobnaia_chast_cifri)):
+                if drobnaia_chast_cifri[i][0] in '0987654321':
+                    if drobnaia_chast_cifri[i][0] == '0' and i + 1 == len(drobnaia_chast_cifri): # не учитывает период нач с двух и более нулей
+                        drobnaia_chast_cifri += '0'
+                        drobnaia_chast_cifri += [drobnaia_chast_cifri[i][1:]]
+                        dl = drobnaia_chast_cifri[i][1:]
+                        del drobnaia_chast_cifri[-3]
+
+            dl = drobnaia_chast_cifri[-1]
+            dl1 = []
+            if dl not in ['10', '11', '12', '13', '14', '15', '16', '17', '18', '19']:
+                for i in range(len(dl)):
+                    if int(dl[i]) * int('1' + '0' * (len(dl) - i - 1)) == 0 and len(dl) > 1:
+                        continue
+                    else:
+                        dl1 += [int(dl[i]) * int('1' + '0' * (len(dl) - i - 1))]
+            else:
+                dl1 = dl
+            print('1', dl1)
+            del drobnaia_chast_cifri[-1]
+            drobnaia_chast_cifri += [str(i) for i in dl1]
+        else:
+            dl1 = []
+            for i in range(len(drobnaia_chast_cifri[0])):
+                if int(drobnaia_chast_cifri[0][i]) * int('1' + '0' * (len(drobnaia_chast_cifri[0]) - i - 1)) == 0 and len(drobnaia_chast_cifri[0]) > 1:
+                    continue
+                else:
+                    dl1 += [int(drobnaia_chast_cifri[0][i]) * int('1' + '0' * (len(drobnaia_chast_cifri[0]) - i - 1))]
+            if drobnaia_chast_cifri[0] in ['10', '11', '12' , '13', '14', '15', '16', '17', '18', '19']:
+                print('2', drobnaia_chast_cifri)
+            else:
+                del drobnaia_chast_cifri[-1]
+                print('2', dl1)
+                drobnaia_chast_cifri += [str(i) for i in dl1]
+        drobnaia_chast_cifri += ['в периоде']
+
+        for i in range(len(drobnaia_chast_cifri)):
+            if drobnaia_chast_cifri[i][0] in '0987654321':
+                drobnaia_chast_cifri[i] = int(drobnaia_chast_cifri[i])
+    print('drobnaia_chast_cifri', drobnaia_chast_cifri)
     itog_cifri = celaia_chast_cifri + ['и'] + drobnaia_chast_cifri
 else:
     itog_cifri = celaia_chast_cifri
 print('itog_cifri', itog_cifri)
+
 
 # переводит из цифр в буквы
 itog_bukvi = [] # подумать над универсальностью - 12_345_678 12 1000000 345 1000 12 плюс склонения
@@ -136,6 +215,18 @@ for i in range(len(itog_cifri)):
             itog_bukvi += [spisok_vsex_chisel[j][1]]
             break
 
+# если слово тысяч встречается больше одного раза, то оставляем только последнее
+c_tisach = itog_bukvi.count('тысяч')
+for i in range(len(itog_bukvi)):
+    if 'тысяч' in itog_bukvi[i]:
+        c_tisach += 1
+if c_tisach > 1:
+    for i in range(c_tisach-1):
+        for j in range(len(itog_bukvi)):
+            if 'тысяч' in itog_bukvi[j]:
+                itog_bukvi[j] = itog_bukvi[j][:-6]
+                break
+
 print(*(itog_bukvi))
 
 
@@ -144,4 +235,6 @@ print(*(itog_bukvi))
 
 
 # девяносто девять плюс сорок восемь      двадцать два умножить на двадцать два    двадцать два и сорок восемь сотых минус ноль и пять десятых   два и две миллионных плюс ноль
-#сорок один и тридцать одна сотая разделить на семнадцать   пятьдесят семь умножить на сорок два      ноль плюс два и пятьсот тридцать восемь тысячных
+#сорок один и тридцать одна сотая разделить на семнадцать   пятьдесят семь умножить на сорок два      ноль плюс два и пятьсот тридцать восемь тысячных   восемь разделить на три
+# одиннадцать разделить на девяносто   четыре разделить на тридцать три   два разделить на сто шестьдесят пять   сорок один разделить на триста тридцать три
+# двадцать один разделить на двести два   один разделить на сто один  2.2-0.2    двадцать два разделить на сто восемьдесят
